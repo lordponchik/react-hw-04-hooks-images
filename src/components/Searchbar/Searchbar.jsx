@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
 import { RxCross2 } from 'react-icons/rx';
 import { toast } from 'react-toastify';
@@ -7,77 +7,68 @@ import PropTypes from 'prop-types';
 
 import s from './Searchbar.module.css';
 
-export class Searchbar extends Component {
-  state = {
-    inputValue: '',
-  };
+export default function Searchbar({ receivingRequest }) {
+  const [inputValue, setInputValue] = useState('');
 
-  handleInput = e => {
+  const handleInput = e => {
     const { value } = e.target;
 
-    this.setState({
-      inputValue: value.trim(),
-    });
+    setInputValue(value.trim());
   };
 
-  onSubmit = e => {
+  const onSubmit = e => {
     e.preventDefault();
-
-    const { inputValue } = this.state;
 
     if (inputValue === '') {
       toast.warn('I was trying to find "Nothing". Nothing found');
 
-      this.props.receivingRequest(null);
+      receivingRequest(null);
       return;
     }
 
-    this.props.receivingRequest(inputValue);
+    receivingRequest(inputValue);
   };
 
-  formReset = e => {
+  const formReset = e => {
     e.currentTarget.parentNode.elements.query.value = '';
-    this.setState({ inputValue: '' });
+
+    setInputValue('');
   };
 
-  render() {
-    const { inputValue } = this.state.inputValue;
+  return (
+    <header className={s.searchbar}>
+      <form className={s.searchForm} onSubmit={onSubmit}>
+        <button type="submit" className={s.searchFormButton}>
+          <div className={s.searchFormButton__wrapper}>
+            <CiSearch
+              style={{ width: '20px', height: '20px', strokeWidth: '1px' }}
+            />
+          </div>
+        </button>
 
-    return (
-      <header className={s.searchbar}>
-        <form className={s.searchForm} onSubmit={this.onSubmit}>
-          <button type="submit" className={s.searchFormButton}>
-            <div className={s.searchFormButton__wrapper}>
-              <CiSearch
-                style={{ width: '20px', height: '20px', strokeWidth: '1px' }}
-              />
-            </div>
-          </button>
+        <input
+          className={s.searchFormInput}
+          type="text"
+          autoComplete="off"
+          value={inputValue}
+          onChange={handleInput}
+          autoFocus
+          name="query"
+          placeholder="Search images and photos"
+        />
 
-          <input
-            className={s.searchFormInput}
-            type="text"
-            autoComplete="off"
-            value={inputValue}
-            onChange={this.handleInput}
-            autoFocus
-            name="query"
-            placeholder="Search images and photos"
-          />
-
-          <button
-            type="button"
-            className={s.searchFormButton}
-            onClick={this.formReset}
-          >
-            <div className={s.searchFormButton__wrapper}>
-              <RxCross2 style={{ width: '20px', height: '20px' }} />
-            </div>
-          </button>
-        </form>
-      </header>
-    );
-  }
+        <button
+          type="button"
+          className={s.searchFormButton}
+          onClick={formReset}
+        >
+          <div className={s.searchFormButton__wrapper}>
+            <RxCross2 style={{ width: '20px', height: '20px' }} />
+          </div>
+        </button>
+      </form>
+    </header>
+  );
 }
 
 Searchbar.propTypes = {
