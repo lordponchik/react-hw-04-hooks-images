@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { requestImages } from 'services/api';
 import Searchbar from './Searchbar/Searchbar';
 import Modal from './Modal/Modal';
-import { ImageGallery } from './ImageGallery/ImageGallery';
+import ImageGallery from './ImageGallery/ImageGallery';
 import LoadMore from './LoadMore/LoadMore';
 import Loader from './Loader/Loader';
 
@@ -117,8 +117,14 @@ export class App extends Component {
   };
 
   render() {
-    const { images, showLoadMore, isLoading, showModal, modalData } =
-      this.state;
+    const {
+      images,
+      showLoadMore,
+      isLoading,
+      showModal,
+      modalData,
+      currentPage,
+    } = this.state;
 
     return (
       <div className={s.app}>
@@ -127,6 +133,7 @@ export class App extends Component {
         {images.length > 0 && (
           <ImageGallery
             images={images}
+            currentPage={currentPage}
             openModal={this.toggleModal}
           ></ImageGallery>
         )}
